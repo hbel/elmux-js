@@ -29,10 +29,13 @@ export function createCommandHandler(component, update, initialState = {}) {
 
     commandStream.onValue(e => {
         const { store, cmd } = e;
-        const newModel = update(store.state, cmd);
-        if (newModel && newModel !== {}) {
-            store.setState(newModel);
-        }
+        store.setState( oldState => {
+            const newModel = update(oldState, cmd);
+            if (!newModel) 
+                return {};
+            else 
+                return newModel;
+        });
     });
 
     component.emitter = emitter;
